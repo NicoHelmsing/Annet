@@ -2,6 +2,13 @@
 //   node scripts/build.mjs            -> uses NOTION_TOKEN + NOTION_DATABASE_ID (+ optional NOTION_ABOUT_PAGE_ID)
 //   node scripts/build.mjs --sample   -> uses sample/artworks.json and the photos in sample/photos
 //   add --preview to also write ./preview (single-page version for a quick online preview)
+//
+// NOTION_ABOUT_PAGE_ID may point to:
+//   - an "Over mij" DATABASE: each row has the text in a property "Over mij-tekst" and optionally a photo in "Foto".
+//     A row whose title contains "about", "english" or "(EN)" (or whose "Taal"/"Language" property is EN/Engels)
+//     is the English text; any other row is the Dutch text. The photo is taken from the Dutch row (or any row).
+//     In the text, every new line becomes a new paragraph.
+//   - a single PAGE: its "Over mij-tekst" property is used, or otherwise the text and first image in the page body.
 import fs from "node:fs/promises";
 import { existsSync, createWriteStream } from "node:fs";
 import path from "node:path";
@@ -36,6 +43,12 @@ const COLS = {
   featured: ["Uitgelicht", "Featured"],
 };
 
+// Columns for the "Over mij" database or page.
+const ABOUT_COLS = {
+  text: ["Over mij-tekst", "Over mij tekst", "Over mij", "Tekst", "About text", "About", "Text"],
+  lang: ["Taal", "Language"],
+};
+
 function normStatus(s) {
   const v = String(s || "").toLowerCase().trim();
   if (/verkocht|sold/.test(v)) return "sold";
@@ -50,7 +63,7 @@ function normPrice(p) {
   return Number.isFinite(n) && n > 0 ? n : null;
 }
 function slugify(s) {
-  return String(s).normalize("NFKD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 60) || "werk";
+  return String(s).normalize("NFKD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 60) || "werk";
 }
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const sha = (s) => crypto.createHash("sha1").update(s).digest("hex").slice(0, 16);
@@ -117,9 +130,23 @@ async function fromNotion() {
     };
   });
 }
-async function aboutFromNotion() {
-  const id = env("NOTION_ABOUT_PAGE_ID").replace(/-/g, "").match(/[0-9a-f]{32}/i)?.[0];
-  if (!id) return null;
+
+/* ---------------- Over mij ---------------- */
+const toParagraphs = (s) => String(s || "").split(/\n+/).map((x) => x.trim()).filter(Boolean);
+const titleOf = (P) => propValue(Object.values(P).find((p) => p.type === "title")) || "";
+function aboutText(P) {
+  const keys = Object.keys(P);
+  for (const n of ABOUT_COLS.text) {
+    const k = keys.find((x) => x.trim().toLowerCase() === n.toLowerCase() && P[x].type === "rich_text");
+    if (k) return propValue(P[k]);
+  }
+  return "";
+}
+function isEnglish(title, lang) {
+  if (lang) return /^(en|eng|engels|english)$/i.test(String(lang).trim());
+  return /\b(about|english|engels)\b|\(en\)/i.test(title);
+}
+async function pageBody(id) {
   const paragraphs = []; let photo = null; let cursor;
   do {
     const res = await notion(`blocks/${id}/children?page_size=100${cursor ? "&start_cursor=" + cursor : ""}`);
@@ -134,6 +161,47 @@ async function aboutFromNotion() {
     cursor = res.has_more ? res.next_cursor : undefined;
   } while (cursor);
   return { paragraphs, photo };
+}
+async function aboutFromNotion() {
+  const id = env("NOTION_ABOUT_PAGE_ID").replace(/-/g, "").match(/[0-9a-f]{32}/i)?.[0];
+  if (!id) return null;
+  const out = { paragraphs: [], paragraphs_en: [], photo: null };
+
+  // First try it as a database; if that fails, it is a single page.
+  let rows = null;
+  try {
+    rows = (await notion(`databases/${id}/query`, { page_size: 100, sorts: [{ timestamp: "created_time", direction: "ascending" }] })).results;
+  } catch (e) {
+    if (/Notion 401/.test(e.message)) throw e;
+  }
+
+  if (rows) {
+    let anyPhoto = null;
+    for (const pg of rows) {
+      const P = pg.properties;
+      const en = isEnglish(titleOf(P), propValue(prop(P, ABOUT_COLS.lang)));
+      const text = toParagraphs(aboutText(P));
+      const target = en ? out.paragraphs_en : out.paragraphs;
+      if (text.length && !target.length) target.push(...text);
+      const photos = propValue(prop(P, COLS.photo)) || [];
+      if (photos.length) {
+        if (!en && !out.photo) out.photo = photos[0];
+        if (!anyPhoto) anyPhoto = photos[0];
+      }
+    }
+    if (!out.photo) out.photo = anyPhoto;
+  } else {
+    const pg = await notion(`pages/${id}`);
+    const P = pg.properties || {};
+    out.paragraphs = toParagraphs(aboutText(P));
+    out.photo = (propValue(prop(P, COLS.photo)) || [])[0] || null;
+    if (!out.paragraphs.length || !out.photo) {
+      const body = await pageBody(id);
+      if (!out.paragraphs.length) out.paragraphs = body.paragraphs;
+      if (!out.photo) out.photo = body.photo;
+    }
+  }
+  return out;
 }
 
 /* ---------------- Sample ---------------- */
@@ -209,17 +277,32 @@ async function main() {
     console.log(`✓ ${title}`);
   }
 
-  // About text and photo
+  // About text and photo: Notion if available, otherwise site.config.json.
   let about = { paragraphs: config.about_nl || [], paragraphs_en: config.about_en || [], photo: null };
   let aboutSrc = config.aboutPhoto ? path.join(ROOT, config.aboutPhoto) : null;
   if (useNotion) {
     const a = await aboutFromNotion();
-    if (a && a.paragraphs.length) about = { paragraphs: a.paragraphs, paragraphs_en: [], photo: null };
-    if (a && a.photo) aboutSrc = a.photo;
+    if (a) {
+      if (a.paragraphs.length) about.paragraphs = a.paragraphs;
+      // English from Notion; if there is none but the Dutch text came from Notion, show that rather than an outdated English text.
+      if (a.paragraphs_en.length) about.paragraphs_en = a.paragraphs_en;
+      else if (a.paragraphs.length) about.paragraphs_en = a.paragraphs;
+      if (a.photo) aboutSrc = a.photo;
+      console.log(`✓ Over mij from Notion (NL: ${a.paragraphs.length} paragraphs, EN: ${a.paragraphs_en.length}, photo: ${a.photo ? "yes" : "no"})`);
+    }
   }
   if (aboutSrc && (/^https?:/.test(aboutSrc) || existsSync(aboutSrc))) {
-    const im = await makeImage(aboutSrc, "atelier", path.join(DIST, "img"));
-    about.photo = { src: im.l, w: im.w, h: im.h };
+    try {
+      const im = await makeImage(aboutSrc, "atelier", path.join(DIST, "img"));
+      about.photo = { src: im.l, w: im.w, h: im.h };
+    } catch (e) {
+      console.warn(`! The Over mij photo could not be read (use a JPG): ${e.message}`);
+      const fallback = config.aboutPhoto ? path.join(ROOT, config.aboutPhoto) : null;
+      if (fallback && fallback !== aboutSrc && existsSync(fallback)) {
+        const im = await makeImage(fallback, "atelier", path.join(DIST, "img"));
+        about.photo = { src: im.l, w: im.w, h: im.h };
+      }
+    }
   }
 
   const site = {
