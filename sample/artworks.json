@@ -1,0 +1,7 @@
+[
+  { "id": "s1", "Titel": "Koedoe", "Techniek": "Schilderij", "Formaat": "", "Jaar": "2020", "Prijs": null, "Status": "Te koop", "Verhaal": "", "Foto": ["sample/photos/koedoe.jpg"] },
+  { "id": "s2", "Titel": "Landschap in Portugal", "Techniek": "Schilderij", "Formaat": "", "Jaar": "", "Prijs": null, "Status": "Te koop", "Verhaal": "", "Foto": ["sample/photos/landschap-portugal.jpg"] },
+  { "id": "s3", "Titel": "Meisje op het strand", "Techniek": "Schilderij", "Formaat": "", "Jaar": "", "Prijs": null, "Status": "Gereserveerd", "Verhaal": "", "Foto": ["sample/photos/meisje-op-het-strand.jpg"] },
+  { "id": "s4", "Titel": "Portret van een dame", "Techniek": "Schilderij", "Formaat": "", "Jaar": "", "Prijs": null, "Status": "Verkocht", "Verhaal": "", "Foto": ["sample/photos/portret-van-een-dame.jpg"] },
+  { "id": "s5", "Titel": "Portretschets van mijn zoon", "Techniek": "Tekening", "Formaat": "", "Jaar": "", "Prijs": null, "Status": "Niet te koop", "Verhaal": "", "Foto": ["sample/photos/portretschets.jpg"] }
+]

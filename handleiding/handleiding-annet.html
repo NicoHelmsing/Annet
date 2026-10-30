@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>Handleiding website Annet</title>
+<style>
+@font-face{font-family:"Fraunces";font-weight:100 900;src:url(../node_modules/@fontsource-variable/fraunces/files/fraunces-latin-opsz-normal.woff2) format("woff2")}
+@font-face{font-family:"Atkinson";font-weight:400;src:url(../node_modules/@fontsource/atkinson-hyperlegible/files/atkinson-hyperlegible-latin-400-normal.woff2) format("woff2")}
+@font-face{font-family:"Atkinson";font-weight:700;src:url(../node_modules/@fontsource/atkinson-hyperlegible/files/atkinson-hyperlegible-latin-700-normal.woff2) format("woff2")}
+@page { size: A4; margin: 16mm 16mm 18mm; }
+:root { --ink:#1E2226; --muted:#4A5157; --accent:#284A7A; --line:#C9CDC8; --soft:#EEF0EC; }
+body { font-family: "Atkinson", Arial, sans-serif; font-size: 15.5pt; line-height: 1.45; color: var(--ink); margin: 0; }
+h1, h2 { font-family: "Fraunces", Georgia, serif; font-weight: 450; line-height: 1.1; margin: 0; }
+h1 { font-size: 30pt; color: var(--accent); }
+h2 { font-size: 21pt; margin: 0 0 4mm; padding-top: 2mm; }
+p { margin: 0 0 3mm; }
+.sub { font-size: 14pt; color: var(--muted); margin-top: 2mm; }
+.page { page-break-after: always; }
+.page:last-child { page-break-after: auto; }
+.box { border: 1.5pt solid var(--line); border-radius: 3mm; padding: 4mm 5mm; margin: 4mm 0; background: #fff; }
+.calm { background: var(--soft); border-color: var(--soft); }
+ol.steps { list-style: none; padding: 0; margin: 0; counter-reset: s; display: grid; gap: 3.2mm; }
+ol.steps li { counter-increment: s; display: grid; grid-template-columns: 11mm 1fr; gap: 3mm; align-items: start; break-inside: avoid; }
+ol.steps li::before { content: counter(s); font-family: "Fraunces", serif; font-size: 17pt; width: 10mm; height: 10mm; border-radius: 50%; background: var(--accent); color: #fff; display: grid; place-items: center; }
+b { color: var(--accent); }
+.word { display: inline-block; border: 1.2pt solid var(--ink); border-radius: 1.5mm; padding: 0 2mm; font-weight: 700; font-size: 13.5pt; }
+.dots { display: grid; grid-template-columns: auto 1fr; gap: 2mm 4mm; align-items: center; margin-top: 2mm; }
+.dot { width: 5mm; height: 5mm; border-radius: 50%; display: inline-block; }
+.small { font-size: 13pt; color: var(--muted); }
+.phone { font-family: "Fraunces", serif; font-size: 20pt; }
+.blank { border-bottom: 1pt solid var(--ink); display: inline-block; min-width: 70mm; }
+</style>
+</head>
+<body>
+
+<section class="page">
+  <h1>Uw website: zo werkt het</h1>
+  <p class="sub">Bewaar dit papier naast uw computer.</p>
+
+  <div class="box calm">
+    <p><b>U kunt niets kapotmaken.</b> Alles wat u in Notion verandert, kunt u gewoon weer terugzetten.</p>
+    <p style="margin:0">Na een wijziging hoeft u niets op te slaan of te versturen. Binnen <b>een uur</b> staat het vanzelf op uw website.</p>
+  </div>
+
+  <h2>Een nieuw schilderij toevoegen</h2>
+  <ol class="steps">
+    <li><div><b>Maak een foto</b> van het schilderij. Bij daglicht, recht ervoor, zonder flits. Het hele schilderij moet erop.</div></li>
+    <li><div>Open op uw telefoon of computer het formulier <span class="word">Nieuw schilderij toevoegen</span>.</div></li>
+    <li><div>Typ bij <span class="word">Titel</span> de naam van het schilderij.</div></li>
+    <li><div>Tik op <span class="word">Foto</span> en kies de foto die u net gemaakt heeft.</div></li>
+    <li><div>Vul in wat u weet: <span class="word">Techniek</span>, <span class="word">Formaat</span>, <span class="word">Prijs</span>. Weet u iets niet? Laat het leeg. Zonder prijs staat er “prijs op aanvraag”.</div></li>
+    <li><div>Kies bij <span class="word">Status</span>: <i>Te koop</i>.</div></li>
+    <li><div>Tik op <span class="word">Versturen</span>. Klaar!</div></li>
+  </ol>
+</section>
+
+<section class="page">
+  <h2>Een schilderij is verkocht</h2>
+  <ol class="steps">
+    <li><div>Open in Notion <span class="word">Mijn schilderijen</span>. U ziet al uw schilderijen als kaartjes.</div></li>
+    <li><div>Tik op het schilderij dat verkocht is.</div></li>
+    <li><div>Tik op <span class="word">Status</span> en kies <i>Verkocht</i>.</div></li>
+  </ol>
+  <p style="margin-top:4mm">Op de website verschijnt dan een rode stip, net als in een galerie. Het schilderij blijft zichtbaar, maar zonder prijs.</p>
+
+  <div class="box">
+    <div class="dots">
+      <span class="dot" style="background:#2F7A45"></span><span><i>Te koop</i>: groene stip</span>
+      <span class="dot" style="background:#B07414"></span><span><i>Gereserveerd</i>: oranje stip, iemand denkt erover na</span>
+      <span class="dot" style="background:#B3261E"></span><span><i>Verkocht</i>: rode stip</span>
+      <span class="dot" style="border:2pt solid #4A5157"></span><span><i>Niet te koop</i>: alleen om te laten zien</span>
+    </div>
+  </div>
+
+  <h2>Een schilderij van de website halen</h2>
+  <p>Open het schilderij en zet een vinkje bij <span class="word">Verbergen</span>. Haal het vinkje weg en het staat er weer op. Liever niet verwijderen: dan bent u het kwijt.</p>
+
+  <h2>Iets veranderen</h2>
+  <p>Een tikfout in een titel, een andere prijs? Open het schilderij, tik op de tekst en verander hem. Meer hoeft niet.</p>
+  <p>Uw tekst <i>Over mij</i> staat op de pagina <span class="word">Over mij</span> in Notion. Daar kunt u de tekst gewoon aanpassen.</p>
+</section>
+
+<section class="page">
+  <h2>Berichten van bezoekers</h2>
+  <p>Als iemand het formulier op uw website invult, krijgt u <b>een gewone e-mail</b>. Het onderwerp begint met <i>“Website Annet”</i>. Als de bezoeker op een schilderij reageert, staat de titel erbij.</p>
+  <p>Wilt u antwoorden? Klik op <span class="word">Beantwoorden</span>, zoals bij elke e-mail.</p>
+
+  <div class="box calm">
+    <p style="margin:0">Kijk ook af en toe in de map <b>Ongewenste e-mail</b> (spam). Staat er een bericht van de website in? Markeer het dan als “geen spam”.</p>
+  </div>
+
+  <h2>Tips voor mooie foto’s</h2>
+  <ul style="margin:0 0 3mm; padding-left: 6mm; display:grid; gap:1.5mm">
+    <li>Hang of zet het schilderij bij een raam, maar niet in de felle zon.</li>
+    <li>Ga er recht voor staan, niet schuin.</li>
+    <li>Geen flits: die geeft een witte vlek.</li>
+    <li>Een close-up van een mooi detail mag ook. Die komt als extra foto erbij.</li>
+  </ul>
+
+  <h2>Hulp nodig?</h2>
+  <p>Bel of app gerust:</p>
+  <p class="phone">Nico &nbsp;<span class="blank">&nbsp;</span></p>
+  <p class="small" style="margin-top:8mm">Website: <span class="blank">&nbsp;</span></p>
+</section>
+
+</body>
+</html>

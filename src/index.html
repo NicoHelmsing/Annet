@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!--BASE-->
+<title>{{TITLE}}</title>
+<meta name="description" content="{{DESCRIPTION}}">
+<!--HEAD-->
+<!--FONTS-->
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<a class="skip" href="#werk">Naar de kunstwerken</a>
+
+<header class="top">
+  <div class="wrap top-in">
+    <a class="brand" href="#" aria-label="Naar boven">
+      <span class="brand-name" data-site="artistName"></span>
+      <span class="brand-sub" data-site-i18n="tagline"></span>
+    </a>
+    <nav class="nav" aria-label="Hoofdmenu">
+      <a href="#werk" data-t="nav_work"></a>
+      <a href="#over" data-t="nav_about"></a>
+      <a href="#contact" data-t="nav_contact"></a>
+      <button type="button" class="lang" id="langBtn" aria-label="Switch to English">EN</button>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero wrap" aria-labelledby="heroTitle">
+    <div class="hero-text">
+      <h1 id="heroTitle"><span data-t="hero_a"></span> <em data-site="artistName"></em></h1>
+      <p class="lede" data-site-i18n="intro"></p>
+      <div class="actions">
+        <a class="btn primary" href="#werk" data-t="cta_work"></a>
+        <a class="btn" href="#contact" data-t="cta_contact"></a>
+      </div>
+    </div>
+    <figure class="hero-art" id="heroArt"></figure>
+  </section>
+
+  <section id="werk" class="section wrap" aria-labelledby="werkTitle">
+    <div class="section-head">
+      <h2 id="werkTitle" data-t="work_title"></h2>
+      <div class="filters" id="filters" role="group"></div>
+    </div>
+    <p class="legend" id="legend"></p>
+    <div class="gallery" id="gallery"></div>
+  </section>
+
+  <section id="over" class="section about-band" aria-labelledby="overTitle">
+    <div class="wrap about">
+      <figure class="about-photo" id="aboutPhoto"></figure>
+      <div class="about-text">
+        <h2 id="overTitle" data-t="about_title"></h2>
+        <div id="aboutBody"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" class="section wrap contact" aria-labelledby="contactTitle">
+    <div class="contact-intro">
+      <h2 id="contactTitle" data-t="contact_title"></h2>
+      <p data-t="contact_lede"></p>
+      <dl class="direct" id="direct"></dl>
+    </div>
+    <form id="contactForm" class="form" novalidate>
+      <input type="hidden" id="f_subject" name="subject" value="">
+      <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <div class="field">
+        <label for="f_name" data-t="f_name"></label>
+        <input id="f_name" name="name" type="text" autocomplete="name" required>
+      </div>
+      <div class="field">
+        <label for="f_email" data-t="f_email"></label>
+        <input id="f_email" name="email" type="email" autocomplete="email" required>
+      </div>
+      <div class="field">
+        <label for="f_phone"><span data-t="f_phone"></span> <span class="opt" data-t="optional"></span></label>
+        <input id="f_phone" name="phone" type="tel" autocomplete="tel">
+      </div>
+      <div class="field">
+        <label for="f_message" data-t="f_message"></label>
+        <textarea id="f_message" name="message" rows="6" required></textarea>
+      </div>
+      <p class="privacy" data-t="privacy"></p>
+      <button class="btn primary big" type="submit" id="sendBtn" data-t="send"></button>
+      <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
+    </form>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap foot-in">
+    <p>© <span id="year"></span> <span data-site="artistName"></span></p>
+    <p class="foot-small" data-t="footer_note"></p>
+  </div>
+</footer>
+
+<dialog id="viewer" class="viewer" aria-labelledby="vTitle">
+  <div class="viewer-in">
+    <div class="v-media">
+      <img id="vImg" alt="">
+      <div class="v-thumbs" id="vThumbs"></div>
+    </div>
+    <div class="v-info">
+      <button type="button" class="v-close" id="vClose" aria-label="Sluiten">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        <span data-t="close"></span>
+      </button>
+      <div class="label big-label" id="vLabel"></div>
+      <p class="v-story" id="vStory"></p>
+      <div class="v-actions">
+        <button type="button" class="btn primary big" id="vInterest"></button>
+        <button type="button" class="btn ghost" id="vShare" data-t="copy_link"></button>
+      </div>
+      <div class="v-nav">
+        <button type="button" class="btn ghost" id="vPrev"><span aria-hidden="true">←</span> <span data-t="prev"></span></button>
+        <button type="button" class="btn ghost" id="vNext"><span data-t="next"></span> <span aria-hidden="true">→</span></button>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<script type="application/json" id="siteData">/*DATA*/</script>
+<!--OPEN-->
+<script src="app.js"></script>
+</body>
+</html>

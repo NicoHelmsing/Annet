@@ -1,0 +1,30 @@
+{
+  "_uitleg": "Instellingen van de website. Alleen de tekst tussen aanhalingstekens aanpassen.",
+
+  "artistName": "Annet",
+  "siteTitle": "Annet — schilderijen en tekeningen",
+  "tagline_nl": "Schilderijen en tekeningen",
+  "tagline_en": "Paintings and drawings",
+
+  "intro_nl": "Portretten, dieren en landschappen, geschilderd en getekend in mijn atelier. Alle werken zijn origineel en uniek. Ziet u iets dat u aanspreekt, of wilt u een werk in opdracht? Stuur mij gerust een bericht.",
+  "intro_en": "Portraits, animals and landscapes, painted and drawn in my studio. Every work is an original. If something speaks to you, or you would like a commissioned piece, please send me a message.",
+
+  "email": "",
+  "phone": "",
+  "location": "",
+  "instagram": "",
+
+  "web3formsKey": "",
+
+  "siteUrl": "",
+
+  "about_nl": [
+    "Ik schilder wat mij raakt: een gezicht, een dier dat je recht aankijkt, het licht boven een glooiend landschap. Ik werk het liefst in mijn atelier onder het dak, met olieverf, acryl, pastel en houtskool.",
+    "Veel werken zijn te koop. Ik maak ook portretten en schilderijen in opdracht, van een geliefde, een huisdier of een plek die u dierbaar is. U bent van harte welkom om na afspraak in het atelier te komen kijken."
+  ],
+  "about_en": [
+    "I paint what moves me: a face, an animal looking straight back at you, the light above rolling hills. I work in my studio under the roof, in oil, acrylic, pastel and charcoal.",
+    "Many works are for sale. I also paint portraits and pieces on commission, of a loved one, a pet or a place that matters to you. You are welcome to visit the studio by appointment."
+  ],
+  "aboutPhoto": "src/assets/annet.jpg"
+}
