@@ -370,6 +370,22 @@ async function main() {
     await fs.writeFile(path.join(DIST, "sitemap.xml"), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map((u) => `<url><loc>${esc(u)}</loc></url>`).join("\n")}\n</urlset>\n`);
     await fs.writeFile(path.join(DIST, "robots.txt"), `User-agent: *\nAllow: /\nSitemap: ${site.siteUrl}/sitemap.xml\n`);
   }
+  // Privacy statement (NL + EN on one page; language follows the visitor's choice on the main site).
+  const months = { nl: ["januari","februari","maart","april","mei","juni","juli","augustus","september","oktober","november","december"],
+    en: ["January","February","March","April","May","June","July","August","September","October","November","December"] };
+  const PRIVACY_UPDATED = config.privacyUpdated || "2026-11-01";
+  const [py, pm, pd] = PRIVACY_UPDATED.split("-").map(Number);
+  const privacy = (await fs.readFile(path.join(ROOT, "src", "privacy.html"), "utf8"))
+    .replaceAll("{{NAME_JS}}", JSON.stringify(config.artistName || "").slice(1, -1).replace(/</g, "\\u003c"))
+    .replaceAll("{{NAME}}", esc(config.artistName || ""))
+    .replaceAll("{{TAGLINE_NL}}", esc(config.tagline_nl || ""))
+    .replaceAll("{{TAGLINE_EN}}", esc(config.tagline_en || ""))
+    .replaceAll("{{LOCATION}}", esc(config.location || ""))
+    .replaceAll("{{EMAIL}}", esc(config.email || ""))
+    .replaceAll("{{UPDATED_NL}}", `${pd} ${months.nl[pm - 1]} ${py}`)
+    .replaceAll("{{UPDATED_EN}}", `${pd} ${months.en[pm - 1]} ${py}`)
+    .replaceAll("{{YEAR}}", String(new Date().getFullYear()));
+  await fs.writeFile(path.join(DIST, "privacy.html"), privacy);
   await fs.writeFile(path.join(DIST, ".nojekyll"), "");
 
   if (PREVIEW) await writePreview(tpl, data, config);

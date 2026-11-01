@@ -30,6 +30,7 @@
       copy_link: "Link naar dit werk kopiëren", copied: "Link gekopieerd",
       prev: "Vorige", next: "Volgende", close: "Sluiten",
       footer_note: "Alle afbeeldingen op deze website zijn eigendom van de kunstenaar.",
+      privacy_link: "Privacyverklaring", privacy_more: "Lees de privacyverklaring.",
       photo_of: "Foto", lang_btn: "EN", lang_label: "Switch to English"
     },
     en: {
@@ -58,6 +59,7 @@
       copy_link: "Copy link to this work", copied: "Link copied",
       prev: "Previous", next: "Next", close: "Close",
       footer_note: "All images on this website are the property of the artist.",
+      privacy_link: "Privacy statement", privacy_more: "Read the privacy statement.",
       photo_of: "Photo", lang_btn: "NL", lang_label: "Schakel naar Nederlands"
     }
   };
