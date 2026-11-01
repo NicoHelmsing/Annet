@@ -16,6 +16,7 @@ import crypto from "node:crypto";
 import { pipeline } from "node:stream/promises";
 import { Readable } from "node:stream";
 import sharp from "sharp";
+import heicConvert from "heic-convert";
 
 const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), "..");
 const DIST = path.join(ROOT, "dist");
@@ -228,9 +229,18 @@ async function fetchSource(src) {
   await fs.rename(file + ".part", file);
   return file;
 }
+// iPhone photos are often HEIC, which sharp cannot read. Convert those to JPEG first.
+async function readImage(local) {
+  const buf = await fs.readFile(local);
+  const brand = buf.subarray(4, 12).toString("latin1");
+  if (/^ftyp(heic|heix|hevc|hevx|heim|heis|mif1|msf1)$/.test(brand)) {
+    return Buffer.from(await heicConvert({ buffer: buf, format: "JPEG", quality: 0.95 }));
+  }
+  return buf;
+}
 async function makeImage(src, base, outDir) {
   const local = await fetchSource(src);
-  const img = sharp(local, { failOn: "none" }).rotate();
+  const img = sharp(await readImage(local), { failOn: "none" }).rotate();
   const large = await img.clone().resize({ width: 1800, height: 1800, fit: "inside", withoutEnlargement: true }).webp({ quality: 82 }).toBuffer({ resolveWithObject: true });
   const small = await img.clone().resize({ width: 760, height: 1400, fit: "inside", withoutEnlargement: true }).webp({ quality: 78 }).toBuffer({ resolveWithObject: true });
   const { dominant } = await sharp(small.data).stats();

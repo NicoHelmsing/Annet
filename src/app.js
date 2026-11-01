@@ -74,6 +74,31 @@
   function pick(w, key) { return (lang === "en" && w[key + "_en"]) ? w[key + "_en"] : w[key]; }
   function $(id) { return document.getElementById(id); }
 
+  // English for the techniques Annet types in Dutch. Unknown words are shown as she wrote them.
+  var TECH_EN = {
+    "olieverf": "oil", "olieverfschilderij": "oil painting", "acryl": "acrylic", "acrylverf": "acrylic",
+    "aquarel": "watercolour", "waterverf": "watercolour", "gouache": "gouache", "tempera": "tempera",
+    "pastel": "pastel", "oliepastel": "oil pastel", "pastelkrijt": "pastel", "houtskool": "charcoal",
+    "potlood": "pencil", "grafiet": "graphite", "kleurpotlood": "coloured pencil", "kleurpotloden": "coloured pencil",
+    "inkt": "ink", "oostindische inkt": "Indian ink", "pen": "pen", "krijt": "chalk", "conté": "Conté",
+    "gemengde techniek": "mixed media", "gemengde technieken": "mixed media", "collage": "collage",
+    "schilderij": "painting", "schilderijen": "paintings", "tekening": "drawing", "tekeningen": "drawings",
+    "schets": "sketch", "portret": "portrait", "ets": "etching", "linoleumsnede": "linocut", "linosnede": "linocut",
+    "houtsnede": "woodcut", "zeefdruk": "screen print", "litho": "lithograph", "grafiek": "print", "beeld": "sculpture",
+    "brons": "bronze", "keramiek": "ceramics", "klei": "clay",
+    "doek": "canvas", "linnen": "linen", "paneel": "panel", "hout": "wood", "papier": "paper", "karton": "board",
+    "board": "board", "op": "on", "en": "and", "met": "with"
+  };
+  function techText(s) {
+    if (lang !== "en" || !s) return s;
+    var low = s.toLowerCase().trim();
+    if (TECH_EN[low]) return cap(TECH_EN[low], s);
+    return s.split(/(\s+|,\s*|\/|\s*&\s*)/).map(function (part) {
+      var k = part.toLowerCase(); return TECH_EN.hasOwnProperty(k) ? cap(TECH_EN[k], part) : part;
+    }).join("");
+  }
+  function cap(en, orig) { return /^[A-ZÀ-Ý]/.test(orig) ? en.charAt(0).toUpperCase() + en.slice(1) : en; }
+
   function priceLine(w) {
     var st = w.status, txt = t("st_" + st);
     if (st === "available" || st === "reserved") {
@@ -83,7 +108,7 @@
     return '<p class="price"><span class="dot ' + st + '" aria-hidden="true"></span>' + esc(txt) + "</p>";
   }
   function metaLine(w) {
-    return [w.technique, w.size, w.year].filter(Boolean).map(esc).join(" · ");
+    return [techText(w.technique), w.size, w.year].filter(Boolean).map(esc).join(" · ");
   }
   function labelHTML(w, tag) {
     var m = metaLine(w);
@@ -139,7 +164,7 @@
   function renderFilters() {
     var opts = [["all", t("all")]];
     if (works.some(function (w) { return w.status === "available"; }) && works.some(function (w) { return w.status !== "available"; })) opts.push(["sale", t("for_sale")]);
-    var tech = techniques(); if (tech.length > 1) tech.forEach(function (x) { opts.push(["tech:" + x, x]); });
+    var tech = techniques(); if (tech.length > 1) tech.forEach(function (x) { opts.push(["tech:" + x, techText(x)]); });
     var box = $("filters");
     box.setAttribute("aria-label", "Filter");
     box.hidden = opts.length < 2;
